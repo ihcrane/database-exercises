@@ -6,13 +6,13 @@ describe dept_manager;
 describe employees;
 describe salaries;
 describe titles;
-CHAR, VARCHAR, INT, DATE
-Which table(s) do you think contain a numeric type column? salaries, dept_emp, employees, titles
-Which table(s) do you think contain a string type column? employees, titles
-Which table(s) do you think contain a date type column? dept_emp, dept_manager, employees, salaries, titles
-What is the relationship betwen the employees and the departments tables? no relation
+-- CHAR, VARCHAR, INT, DATE
+-- Which table(s) do you think contain a numeric type column? salaries, dept_emp, employees, titles
+-- Which table(s) do you think contain a string type column? employees, titles
+-- Which table(s) do you think contain a date type column? dept_emp, dept_manager, employees, salaries, titles
+-- What is the relationship betwen the employees and the departments tables? no relation
 
-SQL for dept_manager table:
+-- SQL for dept_manager table:
 CREATE TABLE `dept_manager` (
   `emp_no` int NOT NULL,
   `dept_no` char(4) NOT NULL,
