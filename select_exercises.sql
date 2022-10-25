@@ -6,7 +6,7 @@
 SELECT name FROM albums WHERE artist='Pink Floyd';
 SELECT * FROM albums WHERE artist='The Beatles';
 SELECT genre FROM albums WHERE name='Nevermind';
-SELECT name FROM albums WHERE release_date BETWEEN 1990 AND 2000;
-SELECT name FROM albums WHERE sales >= 20;
+SELECT name, release_date FROM albums WHERE release_date BETWEEN 1990 AND 2000;
+SELECT name, sales FROM albums WHERE sales < 20;
 SELECT name FROM albums WHERE genre = 'Rock';
 -- The query for Rock only queried for Rock by itself not other different types of rock
