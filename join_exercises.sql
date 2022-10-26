@@ -117,7 +117,7 @@ GROUP BY d.dept_name
 ORDER BY AVG(s.salary) DESC;
 
 --Q11: Bonus 1
-SELECT CONCAT(e.first_name, ' ', e.last_name) AS employee_name, d.dept_name, CONCAT(em.first_name, ' ', em.last_name)
+SELECT CONCAT(e.first_name, ' ', e.last_name) AS employee_name, d.dept_name, CONCAT(em.first_name, ' ', em.last_name) AS manager_name
 FROM departments AS d 
 JOIN dept_manager AS dm
 	ON d.dept_no = dm.dept_no
