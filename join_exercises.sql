@@ -131,13 +131,30 @@ WHERE dm.to_date = '9999-01-01' AND dm.emp_no = em.emp_no
 GROUP BY employee_name, d.dept_name, dm.emp_no;
 
 --Q12: Bonus 2
-SELECT d.dept_name, MAX(s.salary) AS highest_salary
+SELECT s. department, s.highest_salary, CONCAT(e.first_name, ' ', e.last_name) AS full_name
+FROM (
+SELECT s.department, s.highest_salary, y.emp_no
+FROM (
+SELECT d.dept_name AS department, MAX(s.salary) AS highest_salary
 FROM departments AS d 
 JOIN dept_emp AS de
 	ON d.dept_no = de.dept_no
 JOIN employees AS e
 	ON de.emp_no = e.emp_no
 JOIN salaries AS s
-	ON e.emp_no = s.emp_no
-WHERE s.to_date >= NOW()
-GROUP BY d.dept_name;
+	ON s.emp_no = e.emp_no
+WHERE s.to_date >= CURDATE()
+GROUP BY d.dept_name
+ORDER BY d.dept_name) AS s
+JOIN departments AS d
+	ON s.department = d.dept_name
+JOIN dept_emp AS de
+	ON d.dept_no = de.dept_no
+JOIN employees AS e
+	ON de.emp_no = e.emp_no
+LEFT JOIN salaries AS y
+	ON s.highest_salary = y.salary
+GROUP BY s.department, s.highest_salary, y.emp_no
+ORDER BY s.department) AS s
+JOIN employees AS e
+	ON s.emp_no = e.emp_no;
