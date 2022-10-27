@@ -126,8 +126,7 @@ JOIN employees AS e
 	ON de.emp_no = e.emp_no
 JOIN employees AS em
 	ON dm.emp_no = em.emp_no
-WHERE dm.to_date = '9999-01-01' AND dm.emp_no = em.emp_no
-GROUP BY employee_name, d.dept_name, dm.emp_no;
+WHERE dm.to_date = '9999-01-01' AND dm.emp_no = em.emp_no;
 
 --Q12: Bonus 2
 SELECT s. department, s.highest_salary, CONCAT(e.first_name, ' ', e.last_name) AS full_name
