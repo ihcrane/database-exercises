@@ -28,18 +28,17 @@ WHERE title = 'Manager' AND t.to_date = '9999-01-01' AND e.gender = 'F'
 ORDER BY d.dept_name;
 
 --Q4
-SELECT t.title, COUNT(e.emp_no)
-FROM departments AS d 
-JOIN dept_manager AS dm
-	ON d.dept_no = dm.dept_no
-JOIN dept_emp AS de
-	ON d.dept_no = de.dept_no
-JOIN employees AS e
-	ON de.emp_no = e.emp_no
+SELECT t.title, COUNT(de.emp_no) AS total 
+FROM dept_emp AS de
 JOIN titles AS t
-	ON e.emp_no = t.emp_no
-WHERE d.dept_name = 'Customer Service' AND dm.to_date = '9999-01-01'
-GROUP BY t.title;
+	ON t.emp_no = de.emp_no
+JOIN employees AS e
+	ON e.emp_no = de.emp_no
+JOIN departments AS d
+	ON d.dept_no = de.dept_no
+WHERE d.dept_name = 'Customer Service' AND t.to_date >= NOW() AND de.to_date >= NOW()
+GROUP BY t.title
+ORDER BY t.title ASC;
 
 --Q5
 SELECT d.dept_name, CONCAT(e.first_name, ' ', e.last_name) AS full_name, s.salary
