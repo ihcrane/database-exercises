@@ -50,22 +50,23 @@ JOIN dept_emp AS de
 GROUP BY dept_name;
 
 --Q7
-SELECT dept_name, AVG(salary)
+SELECT dept_name, ROUND(AVG(salary), 2)
 FROM departments AS d 
 JOIN dept_emp AS de
 	ON d.dept_no = de.dept_no AND de.to_date > CURDATE()
-JOIN employees AS e USING(emp_no)
 JOIN salaries AS s
-	ON s.emp_no = e.emp_no AND s.to_date > CURDATE()
+	ON s.emp_no = de.emp_no AND s.to_date > CURDATE()
 GROUP BY d.dept_name
 ORDER BY AVG(salary) DESC LIMIT 1;
 
 --Q8
-SELECT first_name, last_name
+SELECT first_name, last_name, dept_name AS Department, salary
 FROM departments AS d 
-JOIN dept_emp AS de USING(dept_no)
+JOIN dept_emp AS de 
+	ON d.dept_no = de.dept_no AND de.to_date > CURDATE()
 JOIN employees AS e USING(emp_no)
-JOIN salaries AS s USING(emp_no)
+JOIN salaries AS s 
+	ON s.emp_no = e.emp_no AND s.to_date > CURDATE()
 WHERE dept_name = 'Marketing'
 ORDER BY salary DESC LIMIT 1;
 
@@ -78,13 +79,12 @@ JOIN employees AS e USING(emp_no)
 JOIN titles AS t USING(emp_no)
 JOIN salaries AS s
 	ON s.emp_no = e.emp_no AND s.to_date > CURDATE()
-ORDER BY s.salary DESC LIMIT 1;
+ORDER BY salary DESC LIMIT 1;
 
 --Q10
 SELECT dept_name, ROUND(AVG(salary), 0)
 FROM departments AS d 
 JOIN dept_emp AS de USING(dept_no)
-JOIN employees AS e USING(emp_no)
 JOIN salaries AS s USING(emp_no)
 GROUP BY d.dept_name
 ORDER BY AVG(salary) DESC;
