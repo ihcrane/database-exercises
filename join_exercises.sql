@@ -45,8 +45,8 @@ GROUP BY dept_name, full_name, salary;
 --Q6
 SELECT dept_name, COUNT(de.emp_no)
 FROM departments AS d 
-JOIN dept_emp AS de USING(dept_no)
-JOIN employees AS e USING(emp_no)
+JOIN dept_emp AS de 
+	ON d.dept_no = de.dept_no AND to_date > CURDATE()
 GROUP BY dept_name;
 
 --Q7
