@@ -16,19 +16,15 @@ JOIN titles AS t
 	ON f.emp_no = t.emp_no;
 
 --Q3
-SELECT f.first_name, f.last_name
+SELECT DISTINCT f.emp_no
 FROM (
 	SELECT first_name, last_name, emp_no
 	FROM employees) AS f
-JOIN dept_emp AS de
-	ON f.emp_no = de.emp_no
-JOIN salaries AS s
-	ON de.emp_no = s.emp_no
-JOIN titles AS t
-	ON s.emp_no = t.emp_no
-WHERE de.to_date <= CURDATE() AND s.to_date <= CURDATE() AND t.to_date <= CURDATE()
-GROUP BY f.first_name, f.last_name;
--- 72074
+JOIN dept_emp AS de USING(emp_no)
+JOIN salaries AS s USING(emp_no)
+JOIN titles AS t USING(emp_no)
+WHERE de.to_date <= CURDATE() AND s.to_date <= CURDATE() AND t.to_date <= CURDATE();
+-- 73363
 
 --Q4
 SELECT e.first_name, e.last_name, e.gender

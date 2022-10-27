@@ -130,3 +130,14 @@ GROUP BY s.department, s.highest_salary, y.emp_no
 ORDER BY s.department) AS s
 JOIN employees AS e
 	ON s.emp_no = e.emp_no;
+
+    CREATE TEMPORARY TABLE noether_2023.sd_salary AS
+SELECT de.emp_no, s.salary AS sal, dept_name, zscore
+FROM departments AS d
+JOIN dept_emp AS de USING(dept_no)
+JOIN salaries AS s ON s.emp_no = de.emp_no AND s.to_date > CURDATE()
+JOIN (SELECT salary,
+    (salary - (SELECT AVG(salary) FROM salaries))
+    /
+    (SELECT stddev(salary) FROM salaries) AS zscore
+FROM salaries) AS z USING(salary)
