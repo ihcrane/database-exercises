@@ -120,7 +120,7 @@ SELECT CONCAT(e.first_name, ' ', e.last_name) AS employee_name, d.dept_name, CON
 FROM departments AS d 
 JOIN dept_manager AS dm
 	ON d.dept_no = dm.dept_no
-RIGHT JOIN dept_emp AS de
+JOIN dept_emp AS de
 	ON dm.dept_no = de.dept_no
 JOIN employees AS e
 	ON de.emp_no = e.emp_no
