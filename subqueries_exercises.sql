@@ -56,8 +56,10 @@ FROM salaries
 WHERE to_date >= CURDATE() AND (
 SELECT MAX(salary) - STD(salary)
 FROM salaries) < salary 
+WHERE to.date >= NOW()
 ORDER BY salary DESC;
 -- 78
+
 SELECT emp_no, salary, (COUNT(emp_no) / (SELECT COUNT(emp_no) FROM salaries WHERE to_date >= CURDATE()) * 100)
 FROM salaries
 WHERE to_date >= CURDATE() AND (
