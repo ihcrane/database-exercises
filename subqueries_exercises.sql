@@ -78,3 +78,19 @@ JOIN employees AS e
 JOIN departments AS d
 	ON dm.dept_no = d.dept_no
 WHERE e.gender = 'F';
+
+--Q8: Bonus 2
+SELECT first_name, last_name, salary
+FROM employees AS e
+JOIN (SELECT salary, emp_no FROM salaries WHERE to_date>=CURDATE() ORDER BY salary DESC LIMIT 1) AS s
+	ON s.emp_no = e.emp_no;
+
+--Q9: Bonus 3
+SELECT d.dept_name, first_name, last_name, salary
+FROM employees AS e
+JOIN (SELECT salary, emp_no FROM salaries WHERE to_date>=CURDATE() ORDER BY salary DESC LIMIT 1) AS s
+	ON s.emp_no = e.emp_no
+JOIN dept_emp AS de
+	ON de.emp_no = e.emp_no
+JOIN departments AS d
+	ON de.dept_no = d.dept_no;
