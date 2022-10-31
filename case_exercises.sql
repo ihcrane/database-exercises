@@ -1,23 +1,21 @@
 --Q1
-SELECT e.emp_no, full_name, dept_no, hire_date,
-	CASE WHEN to_date < CURDATE() THEN to_date
-	ELSE '9999-01-01'
-END AS end_date,
+SELECT emp_no, full_name, dept_no, hire_date, to_date AS end_date,
 	CASE WHEN to_date < CURDATE() THEN 0
 	ELSE 1
 END AS is_current_employee
 FROM (SELECT CONCAT(first_name, " ", last_name) AS full_name, emp_no, hire_date FROM employees GROUP BY emp_no) AS e
 JOIN dept_emp AS de USING(emp_no)
-GROUP BY e.emp_no, full_name, hire_date, dept_no;
+GROUP BY emp_no, full_name, hire_date, dept_no;
 
 --Q2
 SELECT CONCAT(first_name, ' ', last_name) AS full_name,
-	CASE last_name
-		WHEN last_name NOT RLIKE '^[A-H]' THEN 'A-H'
-		WHEN last_name NOT RLIKE '^[I-Q]' THEN 'I-Q'
+	CASE
+		WHEN last_name RLIKE '^[a-h]' THEN 'A-H'
+		WHEN last_name RLIKE '^[i-q]' THEN 'I-Q'
 		ELSE 'R-Z'
 	END AS alpha_group
 FROM employees;
+
 
 --Q3
 SELECT 
