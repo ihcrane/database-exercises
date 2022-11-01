@@ -281,3 +281,376 @@ ORDER BY total_pop DESC;
 --Q5
 SELECT AVG(lifeExpectancy)
 FROM country;
+
+--Q6
+SELECT continent, AVG(lifeExpectancy)
+FROM country
+GROUP BY continent
+ORDER BY AVG(lifeExpectancy);
+
+SELECT region, AVG(lifeExpectancy)
+FROM country
+GROUP BY region
+ORDER BY AVG(lifeExpectancy);
+
+--Q7:Bonus 1
+SELECT name, localname FROM country
+WHERE name != localname;
+
+--Q8:Bonus 2
+SELECT COUNT(lifeExpectancy) FROM country
+WHERE lifeExpectancy < x;
+
+--Q9:Bonus 3
+SELECT district FROM city
+WHERE name = 'x';
+
+--Q10:Bonus 4
+SELECT region FROM country ctry
+JOIN city c ON c.countrycode = ctry.code
+WHERE c.name = 'x';
+
+--Q11:Bonus 5
+SELECT ctry.name FROM country ctry
+JOIN city c ON c.countrycode = ctry.code
+WHERE c.name = 'x';
+
+--Q12:Bonus 6
+SELECT lifeExpectancy FROM country ctry
+JOIN city c ON c.countrycode = ctry.code
+WHERE c.name = 'x';
+
+--PART SIX--
+--Q1
+--topping_id, topping_name, topping_price
+--pizza_id, order_id, crust_type_id, size_id (no correlation)
+
+--Q2
+--modifier_id, modifier_name, modifier_price
+--no correlation
+
+--Q3
+--they both share size_id
+
+--Q4
+--crust_types, pizza_modifiers, pizza_toppings, 
+
+--Q5
+SELECT DISTINCT topping_name FROM toppings;
+--9
+
+--Q6
+SELECT DISTINCT order_id FROM pizzas;
+--10000
+
+--Q7
+SELECT size_name, COUNT(size_id)
+FROM sizes s
+JOIN pizzas p USING(size_id)
+GROUP BY size_name;
+--Large
+
+--Q8
+SELECT COUNT(order_id) FROM pizzas;
+--20001
+
+--Q9
+SELECT size_name, COUNT(size_id)
+FROM sizes s
+JOIN pizzas p USING(size_id)
+GROUP BY size_name;
+--Large
+
+--Q10
+SELECT AVG(num_pizzas) FROM (
+SELECT order_id, COUNT(pizza_id) AS num_pizzas FROM pizzas
+GROUP BY order_id) AS p;
+--2
+
+--Q11
+SELECT order_id, ROUND(SUM(new_topping_price + new_modifier_price + size_price), 2) AS total_price 
+FROM (
+SELECT order_id, size_price,
+	CASE 
+		WHEN topping_amount = 'extra' THEN (topping_price * 1.5)
+		WHEN topping_amount = 'double' THEN (topping_price * 2)
+		WHEN topping_amount = 'light' THEN (topping_price * .5)
+		WHEN topping_amount IS NULL THEN 0
+		ELSE topping_amount 
+END AS new_topping_price,
+	CASE
+		WHEN modifier_price IS NULL THEN 0
+		ELSE modifier_price
+END AS new_modifier_price
+FROM pizzas p
+JOIN sizes s USING(size_id)
+JOIN crust_types c USING(crust_type_id)
+LEFT JOIN pizza_toppings pt USING(pizza_id)
+LEFT JOIN toppings t USING(topping_id)
+LEFT JOIN pizza_modifiers pm USING(pizza_id)
+LEFT JOIN modifiers m USING(modifier_id)
+ORDER BY order_id) AS np
+GROUP BY order_id;
+
+--Q12
+SELECT ROUND(AVG(new_topping_price + new_modifier_price + size_price), 2) AS total_price 
+FROM (
+SELECT order_id, size_price,
+	CASE 
+		WHEN topping_amount = 'extra' THEN (topping_price * 1.5)
+		WHEN topping_amount = 'double' THEN (topping_price * 2)
+		WHEN topping_amount = 'light' THEN (topping_price * .5)
+		WHEN topping_amount IS NULL THEN 0
+		ELSE topping_amount 
+END AS new_topping_price,
+	CASE
+		WHEN modifier_price IS NULL THEN 0
+		ELSE modifier_price
+END AS new_modifier_price
+FROM pizzas p
+JOIN sizes s USING(size_id)
+JOIN crust_types c USING(crust_type_id)
+LEFT JOIN pizza_toppings pt USING(pizza_id)
+LEFT JOIN toppings t USING(topping_id)
+LEFT JOIN pizza_modifiers pm USING(pizza_id)
+LEFT JOIN modifiers m USING(modifier_id)
+ORDER BY order_id) AS np;
+--12.77
+
+--Q13
+SELECT size_name, COUNT(size_id) 
+FROM (
+SELECT *,
+	CASE 
+		WHEN topping_amount = 'extra' THEN (topping_price * 1.5)
+		WHEN topping_amount = 'double' THEN (topping_price * 2)
+		WHEN topping_amount = 'light' THEN (topping_price * .5)
+		WHEN topping_amount IS NULL THEN 0
+		ELSE topping_amount 
+END AS new_topping_price,
+	CASE
+		WHEN modifier_price IS NULL THEN 0
+		ELSE modifier_price
+END AS new_modifier_price
+FROM pizzas p
+JOIN sizes s USING(size_id)
+JOIN crust_types c USING(crust_type_id)
+LEFT JOIN pizza_toppings pt USING(pizza_id)
+LEFT JOIN toppings t USING(topping_id)
+LEFT JOIN pizza_modifiers pm USING(pizza_id)
+LEFT JOIN modifiers m USING(modifier_id)
+ORDER BY order_id) AS np
+GROUP BY size_name;
+--x-large
+
+--Q14
+SELECT topping_name, COUNT(topping_id) 
+FROM (
+SELECT *,
+	CASE 
+		WHEN topping_amount = 'extra' THEN (topping_price * 1.5)
+		WHEN topping_amount = 'double' THEN (topping_price * 2)
+		WHEN topping_amount = 'light' THEN (topping_price * .5)
+		WHEN topping_amount IS NULL THEN 0
+		ELSE topping_amount 
+END AS new_topping_price,
+	CASE
+		WHEN modifier_price IS NULL THEN 0
+		ELSE modifier_price
+END AS new_modifier_price
+FROM pizzas p
+JOIN sizes s USING(size_id)
+JOIN crust_types c USING(crust_type_id)
+LEFT JOIN pizza_toppings pt USING(pizza_id)
+LEFT JOIN toppings t USING(topping_id)
+LEFT JOIN pizza_modifiers pm USING(pizza_id)
+LEFT JOIN modifiers m USING(modifier_id)
+ORDER BY order_id) AS np
+GROUP BY topping_name
+ORDER BY COUNT(topping_id) DESC;
+--pepperoni
+
+--Q15
+SELECT COUNT(pizza_id) 
+FROM (
+SELECT *,
+	CASE 
+		WHEN topping_amount = 'extra' THEN (topping_price * 1.5)
+		WHEN topping_amount = 'double' THEN (topping_price * 2)
+		WHEN topping_amount = 'light' THEN (topping_price * .5)
+		WHEN topping_amount IS NULL THEN 0
+		ELSE topping_amount 
+END AS new_topping_price,
+	CASE
+		WHEN modifier_price IS NULL THEN 0
+		ELSE modifier_price
+END AS new_modifier_price
+FROM pizzas p
+JOIN sizes s USING(size_id)
+JOIN crust_types c USING(crust_type_id)
+LEFT JOIN pizza_toppings pt USING(pizza_id)
+LEFT JOIN toppings t USING(topping_id)
+LEFT JOIN pizza_modifiers pm USING(pizza_id)
+LEFT JOIN modifiers m USING(modifier_id)
+WHERE topping_amount = 0
+ORDER BY order_id) AS np;
+--47654
+
+--Q16
+SELECT ROUND(AVG(new_topping_price + new_modifier_price + size_price), 2)
+FROM (
+SELECT *,
+	CASE 
+		WHEN topping_amount = 'extra' THEN (topping_price * 1.5)
+		WHEN topping_amount = 'double' THEN (topping_price * 2)
+		WHEN topping_amount = 'light' THEN (topping_price * .5)
+		WHEN topping_amount IS NULL THEN 0
+		ELSE topping_amount 
+END AS new_topping_price,
+	CASE
+		WHEN modifier_price IS NULL THEN 0
+		ELSE modifier_price
+END AS new_modifier_price
+FROM pizzas p
+JOIN sizes s USING(size_id)
+JOIN crust_types c USING(crust_type_id)
+LEFT JOIN pizza_toppings pt USING(pizza_id)
+LEFT JOIN toppings t USING(topping_id)
+LEFT JOIN pizza_modifiers pm USING(pizza_id)
+LEFT JOIN modifiers m USING(modifier_id)
+WHERE topping_amount = 0
+ORDER BY order_id) AS np;
+--12.8
+
+SELECT size_name, COUNT(size_id)
+FROM (
+SELECT *,
+	CASE 
+		WHEN topping_amount = 'extra' THEN (topping_price * 1.5)
+		WHEN topping_amount = 'double' THEN (topping_price * 2)
+		WHEN topping_amount = 'light' THEN (topping_price * .5)
+		WHEN topping_amount IS NULL THEN 0
+		ELSE topping_amount 
+END AS new_topping_price,
+	CASE
+		WHEN modifier_price IS NULL THEN 0
+		ELSE modifier_price
+END AS new_modifier_price
+FROM pizzas p
+JOIN sizes s USING(size_id)
+JOIN crust_types c USING(crust_type_id)
+LEFT JOIN pizza_toppings pt USING(pizza_id)
+LEFT JOIN toppings t USING(topping_id)
+LEFT JOIN pizza_modifiers pm USING(pizza_id)
+LEFT JOIN modifiers m USING(modifier_id)
+WHERE topping_amount = 0
+ORDER BY order_id) AS np
+GROUP BY size_name
+ORDER BY COUNT(size_id) DESC;
+--x-large
+
+--Q17
+SELECT COUNT(pizza_id)
+FROM (
+SELECT *,
+	CASE 
+		WHEN topping_amount = 'extra' THEN (topping_price * 1.5)
+		WHEN topping_amount = 'double' THEN (topping_price * 2)
+		WHEN topping_amount = 'light' THEN (topping_price * .5)
+		WHEN topping_amount IS NULL THEN 0
+		ELSE topping_amount 
+END AS new_topping_price,
+	CASE
+		WHEN modifier_price IS NULL THEN 0
+		ELSE modifier_price
+END AS new_modifier_price
+FROM pizzas p
+JOIN sizes s USING(size_id)
+JOIN crust_types c USING(crust_type_id)
+LEFT JOIN pizza_toppings pt USING(pizza_id)
+LEFT JOIN toppings t USING(topping_id)
+LEFT JOIN pizza_modifiers pm USING(pizza_id)
+LEFT JOIN modifiers m USING(modifier_id)
+WHERE topping_name = 'olives' AND size_name = 'large'
+ORDER BY order_id) AS np;
+--1326
+
+--Q18
+SELECT AVG(num_of_toppings)
+FROM (
+SELECT pizza_id, COUNT(topping_id) AS num_of_toppings
+END AS new_modifier_price
+FROM pizzas p
+JOIN sizes s USING(size_id)
+JOIN crust_types c USING(crust_type_id)
+LEFT JOIN pizza_toppings pt USING(pizza_id)
+LEFT JOIN toppings t USING(topping_id)
+LEFT JOIN pizza_modifiers pm USING(pizza_id)
+LEFT JOIN modifiers m USING(modifier_id)
+GROUP BY pizza_id) AS np;
+--2.38
+
+--Q19
+SELECT AVG(num_of_pizzas)
+FROM (
+SELECT order_id, COUNT(pizza_id) AS num_of_pizzas
+FROM pizzas p
+JOIN sizes s USING(size_id)
+JOIN crust_types c USING(crust_type_id)
+LEFT JOIN pizza_toppings pt USING(pizza_id)
+LEFT JOIN toppings t USING(topping_id)
+LEFT JOIN pizza_modifiers pm USING(pizza_id)
+LEFT JOIN modifiers m USING(modifier_id)
+GROUP BY order_id) AS np;
+--5.02
+
+--Q20
+SELECT ROUND(AVG(new_topping_price + new_modifier_price + size_price), 2)
+FROM (
+SELECT *,
+	CASE 
+		WHEN topping_amount = 'extra' THEN (topping_price * 1.5)
+		WHEN topping_amount = 'double' THEN (topping_price * 2)
+		WHEN topping_amount = 'light' THEN (topping_price * .5)
+		WHEN topping_amount IS NULL THEN 0
+		ELSE topping_amount 
+END AS new_topping_price,
+	CASE
+		WHEN modifier_price IS NULL THEN 0
+		ELSE modifier_price
+END AS new_modifier_price
+FROM pizzas p
+JOIN sizes s USING(size_id)
+JOIN crust_types c USING(crust_type_id)
+LEFT JOIN pizza_toppings pt USING(pizza_id)
+LEFT JOIN toppings t USING(topping_id)
+LEFT JOIN pizza_modifiers pm USING(pizza_id)
+LEFT JOIN modifiers m USING(modifier_id)) AS np;
+--12.77
+
+--Q21
+SELECT AVG(order_total) FROM (
+SELECT order_id, ROUND(AVG(new_topping_price + new_modifier_price + size_price), 2) AS order_total
+FROM (
+SELECT *,
+	CASE 
+		WHEN topping_amount = 'extra' THEN (topping_price * 1.5)
+		WHEN topping_amount = 'double' THEN (topping_price * 2)
+		WHEN topping_amount = 'light' THEN (topping_price * .5)
+		WHEN topping_amount IS NULL THEN 0
+		ELSE topping_amount 
+END AS new_topping_price,
+	CASE
+		WHEN modifier_price IS NULL THEN 0
+		ELSE modifier_price
+END AS new_modifier_price
+FROM pizzas p
+JOIN sizes s USING(size_id)
+JOIN crust_types c USING(crust_type_id)
+LEFT JOIN pizza_toppings pt USING(pizza_id)
+LEFT JOIN toppings t USING(topping_id)
+LEFT JOIN pizza_modifiers pm USING(pizza_id)
+LEFT JOIN modifiers m USING(modifier_id)) AS np
+GROUP BY order_id) AS ot;
+--12.72
+
